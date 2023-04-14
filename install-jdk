@@ -1,0 +1,35 @@
+- hosts: all
+  become: true
+
+  tasks:
+    - name: Install dependencies
+      yum:
+        name:
+          - tar
+    
+    - name: Extract JDK source code
+      unarchive:
+        src: "/tmp/jdk-8u261-linux-x64.tar.gz"
+        dest: "/opt"
+        remote_src: true
+        extra_opts: "--strip-components=1"
+    
+    - name: Set JAVA_HOME environment variable
+      lineinfile:
+        dest: "/etc/profile"
+        line: "export JAVA_HOME=/opt/jdk1.8.0_261"
+        state: present
+        create: true
+    
+    - name: Set PATH environment variable
+      lineinfile:
+        dest: "/etc/profile"
+        line: 'export PATH="$JAVA_HOME/bin:$PATH"'
+        state: present
+        create: true
+    
+    - name: Reload shell environment
+      shell: "source /etc/profile"
+    
+    - name: Verify JDK installation
+      command: "java -version"
