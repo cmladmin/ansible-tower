@@ -1,6 +1,5 @@
 - hosts: all
-  become: true
-
+  remote_user: root
   tasks:
     - name: Install dependencies
       yum:
